@@ -3,14 +3,16 @@ import threading
 import os
 from colorama import Fore
 import random
-import time, string
+import string
 os.system('color')
 
 
-print(f'[1] Friend Bot\n[2] Follow bot\n[3] Proxyless Friend bot\n[4] Proxyless cookie checker\n[5] UserID Generator\n[6] Ally Bot\n[7] GroupID Generator\n[8] Proxyless GroupID Generator\n[9] Model Buyer\n[10] Model Favorite Bot\n[11] Game Favorite Bot' + Fore.RESET)
+
+
+print(f'[1] Friend Bot\n[2] Follow bot\n[3] Proxyless Friend bot\n[4] Proxyless cookie checker\n[5] UserID Generator\n[6] Ally Bot\n[7] GroupID Generator\n[8] Proxyless GroupID Generator\n[9] Model Buyer\n[10] Model Favorite Bot\n[11] Game Favorite Bot\n[12] Status Changer\n[13] Description Changer' + Fore.RESET)
 amount = 0
 
-print('\n\n\n\n')
+print('\n\n')
 choice = input('>>>> ')
 def friendbot():
 
@@ -272,8 +274,54 @@ def favoritegame():
                 print(f'[{Fore.RED} - {Fore.RESET}] Dead Proxy')
         except Exception as err:
             print(f'[{Fore.RED} - {Fore.RESET}] Error: {err}')
+def cookienorm():
+    while True:
+        try:
+            cookie = open('cookies.txt', 'r').read().split('\n')
+            cookierandom = random.choice(cookie)
+
+            cookies = {'.ROBLOSECURITY': cookierandom}
+
+            gathtoken = requests.post('https://auth.roblox.com/v2/logout', cookies=cookies)
+            token = gathtoken.headers['x-csrf-token']
+
+            proxypool = open('proxies.txt', 'r').read().split('\n')
+            proxies = {
+                'https': 'https://' + random.choice(proxypool)
+            }
+
+            setcostume = requests.post('https://www.roblox.com/home/updatestatus', data={'status': f'{status}',}, headers={'x-csrf-token': token}, cookies=cookies, proxies=proxies)
+            if setcostume.status_code == 200:
+                print(f'[{Fore.GREEN} + {Fore.RESET}] Status set: {status}')
+            else:
+                print(f'Dead Proxy, or something failed, Retrying. . .')
+        except Exception as err:
+            print(f'[{Fore.RED} - {Fore.RESET}] Error: {err}')
+def descriptionchange():
+    while True:
+        try:
+            cookie = open('cookies.txt', 'r').read().split('\n')
+            cookierandom = random.choice(cookie)
+
+            cookies = {'.ROBLOSECURITY': cookierandom}
+
+            gathtoken = requests.post('https://auth.roblox.com/v2/logout', cookies=cookies)
+            token = gathtoken.headers['x-csrf-token']
+
+            proxypool = open('proxies.txt', 'r').read().split('\n')
+            proxies = {
+                'https': 'https://' + random.choice(proxypool)
+            }
 
 
+            changedesc = requests.post('https://accountinformation.roblox.com/v1/description', cookies=cookies,proxies=proxies, headers={'x-csrf-token': token},data={'description': content})
+
+            if changedesc.status_code == 200:
+                print(f'[{Fore.GREEN} + {Fore.RESET}] Cookie changed Description: {content}')
+            else:
+                print(f'[{Fore.RED} - {Fore.RESET}] Dead Proxy or already changed, Retrying. . .')
+        except Exception as err:
+            print(f'[{Fore.RED} - ] Error: {err}')
 if choice == '1':
     clientid = input('Enter an ID: ')
     num = int(input('Threads: '))
@@ -327,3 +375,13 @@ if choice == '11':
     num = int(input('Threads: '))
     for i in range(num):
         t1 = threading.Thread(target=favoritegame).start()
+if choice == '12':
+    status = input('Enter a Status: ')
+    num = int(input('Threads: '))
+    for i in range(num):
+        t1 = threading.Thread(target=cookienorm).start()
+if choice == '13':
+    content = input('Enter a description: ')
+    num = int(input('Threads: '))
+    for i in range(num):
+        t1 = threading.Thread(target=descriptionchange).start()
