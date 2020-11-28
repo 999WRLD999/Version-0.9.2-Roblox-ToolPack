@@ -4,28 +4,28 @@ import os
 from colorama import Fore
 import random
 import string
+from itertools import cycle
 os.system('color')
 
 
 
-
-print(f'[1] Friend Bot\n[2] Follow bot\n[3] Proxyless Friend bot\n[4] Proxyless cookie checker\n[5] UserID Generator\n[6] Ally Bot\n[7] GroupID Generator\n[8] Proxyless GroupID Generator\n[9] Model Buyer\n[10] Model Favorite Bot\n[11] Game Favorite Bot\n[12] Status Changer\n[13] Description Changer' + Fore.RESET)
+print(f'[1] Friend Bot\n[2] Follow bot\n[3] Proxyless Friend bot\n[4] Proxyless cookie checker\n[5] UserID Generator\n[6] Ally Bot\n[7] GroupID Generator\n[8] Proxyless GroupID Generator\n[9] Model Buyer\n[10] Model Favorite Bot\n[11] Game Favorite Bot\n[12] Status Changer\n[13] Description Changer\n[14] UnFollow Bot\n[15] UserName Converter' + Fore.RESET)
 amount = 0
+
+with open('cookies.txt','r+', encoding='utf-8') as f:
+    cookie = cycle(f.read().splitlines())
+with open('proxies.txt', 'r+', encoding='utf-8') as f:
+    proxy = cycle(f.read().splitlines())
 
 print('\n\n')
 choice = input('>>>> ')
 def friendbot():
-
     while True:
         try:
-            cookie = open('cookies.txt', 'r').read().split('\n')
-            cookierandom = random.choice(cookie)
-            proxypool = open('proxies.txt', 'r').read().split('\n')
-
-            cookies = {'.ROBLOSECURITY': cookierandom}
+            cookies = {'.ROBLOSECURITY': next(cookie)}
 
             proxies = {
-                'https': 'https://' + random.choice(proxypool)
+                'https': 'https://' + next(proxy)
             }
 
 
@@ -35,11 +35,11 @@ def friendbot():
             sendfriend = requests.post(f'https://friends.roblox.com/v1/users/{clientid}/request-friendship', cookies=cookies,
                                        headers={'x-csrf-token': token}, proxies=proxies)
             if sendfriend.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] Friend Request sent: {clientid}')
+                print(f'{Fore.GREEN}[ + ] Friend Request sent: {clientid}{Fore.RESET}')
             else:
-                print(f'[{Fore.RED} - {Fore.RESET}] Dead Proxy or already friended')
+                print(f'{Fore.RED}[ - ] Dead Proxy or already friended{Fore.RESET}')
         except Exception as proxerror:
-            print(f'[{Fore.RED} - {Fore.RESET}] Error: {proxerror}')
+            print(f'{Fore.RED}[ - ] Error: {proxerror}{Fore.RESET}')
 def followbot():
     while True:
         try:
@@ -61,31 +61,28 @@ def followbot():
             sendfollow = requests.post(f'https://friends.roblox.com/v1/users/{clientid}/follow', cookies=cookies, proxies=proxies, headers=headers)
 
             if sendfollow.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] Follow sent: {clientid}')
+                print(f'[{Fore.GREEN} + ] Follow sent: {clientid}{Fore.RESET}')
             else:
-                print(f'[{Fore.RED} - {Fore.RESET}] Dead Proxy')
+                print(f'{Fore.RED}[ - ] Dead Proxy{Fore.RESET}')
         except Exception as proxerror:
-            print(f'[{Fore.RED} - {Fore.RESET}] Erorr: {proxerror}')
+            print(f'{Fore.RED}[ - ] Erorr: {proxerror}{Fore.RESET}')
 
 
 def unproxyfriend():
     while True:
         try:
-            cookie = open('cookies.txt', 'r').read().split('\n')
-            cookierandom = random.choice(cookie)
-
-            cookies = {'.ROBLOSECURITY': cookierandom}
+            cookies = {'.ROBLOSECURITY': next(cookie)}
 
             gathtoken = requests.post('https://auth.roblox.com/v2/logout', cookies=cookies)
             token = gathtoken.headers['x-csrf-token']
 
             sendfriend = requests.post(f'https://friends.roblox.com/v1/users/{clientid}/request-friendship', cookies=cookies,headers={'x-csrf-token': token})
             if sendfriend.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] Friend request sent: {clientid}')
+                print(f'{Fore.GREEN}[ + ] Friend request sent: {clientid}{Fore.RESET}')
             else:
-                print(f'[{Fore.RED} - {Fore.RESET}] Already friended, Retrying. . .')
+                print(f'{Fore.RED}[ - ] Already friended, Retrying. . .{Fore.RESET}')
         except Exception as proxerror:
-            print(f'[{Fore.RED} - {Fore.RESET}] Error: {proxerror}')
+            print(f'{Fore.RED}[ - ] Error: {proxerror}{Fore.RESET}')
 def proxylesschecker():
     while True:
         cookie = open('cookies.txt','r').read().split('\n')
@@ -101,38 +98,37 @@ def proxylesschecker():
 
             readcookies = open('validcookies.txt', 'r').read().split('\n')
             if cookierandom in readcookies:
-                print(f'[{Fore.RED} - {Fore.RESET}] Cookie already in file: {cookierandom}')
+                print(f'{Fore.RED}[ - {Fore.RESET}] Cookie already in file: {cookierandom}')
             else:
                 print(f'[{Fore.GREEN} - {Fore.RESET}] Cookie Valid: {cookierandom}')
                 with open('validcookies.txt', "a+") as f:
                     f.write(cookierandom + "\n")
         else:
-            print(f'[{Fore.RED} - {Fore.RESET}] Dead Cookie: {cookierandom}')
+            print(f'[{Fore.RED} - ] Dead Cookie: {cookierandom}{Fore.RESET}')
 def userid_gen():
-    try:
-        while True:
+    while True:
+        try:
             randomnum = ''.join(random.choices(string.digits, k=9))
 
             findid = requests.get(f'https://www.roblox.com/users/{randomnum}/profile')
 
             if findid.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] ID Valid: {randomnum}')
+                print(f'{Fore.GREEN}[ + ] ID Valid: {randomnum}{Fore.RESET}')
                 with open('validids.txt', "a+") as f:
                     f.write(f'{randomnum}' + '\n')
             else:
-                print(f'[{Fore.RED} - {Fore.RESET}] ID Invalid: {randomnum}')
-    except Exception as err:
-        print(f'Error: {err}')
+                print(f'{Fore.RED}[ - ] ID Invalid: {randomnum}{Fore.RESET}')
+        except Exception as err:
+            print(f'{Fore.RED}Error: {err}{Fore.RESET}')
 def groupally():
-    try:
-        while True:
-            proxypool = open('proxies.txt', 'r').read().split('\n')
+    while True:
+        try:
             groupids = open('validgroupids.txt', 'r').read().split('\n')
 
             randomid = random.choice(groupids)
             cookies = {'.ROBLOSECURITY': selfcookie}
             proxies = {
-                'https': 'https://' + random.choice(proxypool)
+                'https': 'https://' + next(proxy)
             }
 
             gathtoken = requests.post('https://auth.roblox.com/v2/logout', cookies=cookies)
@@ -143,60 +139,56 @@ def groupally():
             sendally = requests.post(f'https://groups.roblox.com/v1/groups/{selfgroupid}/relationships/allies/{randomid}', proxies=proxies, headers=headers, cookies=cookies)
 
             if sendally.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] Ally Sent: {randomid}')
+                print(f'{Fore.GREEN}[ + ] Ally Sent: {randomid}{Fore.RESET}')
             else:
-                print(f'[{Fore.RED} - {Fore.RESET}] Something Failed, Retrying. . .')
-    except Exception as err:
-        print(f'[{Fore.RED} - {Fore.RESET}] Dead Proxy')
+                print(f'{Fore.RED}[ - ] Something Failed, Retrying. . .{Fore.RESET}')
+        except Exception as err:
+            print(f'{Fore.RED}[ - ] Error: {err}{Fore.RESET}')
 def groupidgen():
-    try:
-        while True:
+    while True:
+        try:
             randomnum = ''.join(random.choices(string.digits, k=6))
 
-            proxypool = open('proxies.txt', 'r').read().split('\n')
             proxies = {
-                'https': 'https://' + random.choice(proxypool)
+                'https': 'https://' + next(proxy)
             }
 
             checkgroup = requests.get(f'https://groups.roblox.com/v1/groups/{randomnum}', proxies=proxies)
 
             if checkgroup.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] GroupID Valid: {randomnum}')
+                print(f'{Fore.GREEN}[ + ] GroupID Valid: {randomnum}{Fore.RESET}')
                 with open('validgroupids.txt', 'a+') as f:
                     f.write(f'{randomnum}' + '\n')
             else:
-                print(f'[{Fore.RED} - {Fore.RESET}] GroupID Invalid: {randomnum}')
-    except Exception as err:
-        print(f'[{Fore.RED} - {Fore.RESET}] Dead Proxy')
+                print(f'{Fore.RED}[ - ] GroupID Invalid: {randomnum}{Fore.RESET}')
+        except Exception as err:
+            print(f'{Fore.RED}[ - ] Error: {err}{Fore.RESET}')
 def proxylessgroupidgen():
-    try:
-        while True:
+    while True:
+        try:
             randomnum = ''.join(random.choices(string.digits, k=6))
 
             checkgroup = requests.get(f'https://groups.roblox.com/v1/groups/{randomnum}')
 
             if checkgroup.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] GroupID Valid: {randomnum}')
+                print(f'{Fore.GREEN}[ + ] GroupID Valid: {randomnum}{Fore.RESET}')
                 with open('validgroupids.txt', 'a+') as f:
                     f.write(f'{randomnum}' + '\n')
             else:
-                print(f'[{Fore.RED} - {Fore.RESET}] GroupID Invalid: {randomnum}')
-    except Exception as err:
-        print(f'[{Fore.RED} - {Fore.RESET}] Error: {err}')
+                print(f'{Fore.RED}[ - ] GroupID Invalid: {randomnum}{Fore.RESET}')
+        except Exception as err:
+            print(f'{Fore.RED}[ - ] Error: {err}{Fore.RESET}')
 def modelbuyer():
     while True:
         try:
-            cookie = open('cookies.txt', 'r').read().split('\n')
-            cookierandom = random.choice(cookie)
 
-            cookies = {'.ROBLOSECURITY': cookierandom}
+            cookies = {'.ROBLOSECURITY': next(cookie)}
 
             gathtoken = requests.post('https://auth.roblox.com/v2/logout', cookies=cookies)
             token = gathtoken.headers['x-csrf-token']
 
-            proxypool = open('proxies.txt', 'r').read().split('\n')
             proxies = {
-                'https': 'https://' + random.choice(proxypool)
+                'https': 'https://' + next(proxy)
             }
 
             data = {
@@ -208,29 +200,26 @@ def modelbuyer():
             buymodel = requests.post(f'https://economy.roblox.com/v1/purchases/products/{modelid}', cookies=cookies, proxies=proxies, headers={'x-csrf-token': token}, data=data)
             deletemodel = requests.post('https://www.roblox.com/asset/delete-from-inventory', data={'assetId': modelid},proxies=proxies, cookies=cookies, headers={'x-csrf-token': token})
             if buymodel.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] Bought Model: {modelid}')
+                print(f'{Fore.GREEN}[ + ] Bought Model: {modelid}{Fore.RESET}')
             else:
-                print(f'[{Fore.RED} - {Fore.RESET}] Dead Proxy or Already Bought, Retrying. . .')
+                print(f'{Fore.RED}[ - ] Dead Proxy or Already Bought, Retrying. . .{Fore.RESET}')
             if deletemodel.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] Deleted Model: {modelid}')
+                print(f'{Fore.GREEN}[ + ] Deleted Model: {modelid}{Fore.RESET}')
             else:
-                print(f'[{Fore.RED} - {Fore.RESET}] Dead Proxy or Deleted model, Retrying. . .')
+                print(f'{Fore.RED}[ - ] Dead Proxy or Deleted model, Retrying. . .{Fore.RESET}')
         except Exception as err:
-            print(f'[{Fore.RED} - {Fore.RESET}] Error: {err}')
+            print(f'{Fore.RED}[ - ] Error: {err}{Fore.RESET}')
 def favoritemodel():
     while True:
         try:
-            cookie = open('cookies.txt', 'r').read().split('\n')
-            cookierandom = random.choice(cookie)
 
-            cookies = {'.ROBLOSECURITY': cookierandom}
+            cookies = {'.ROBLOSECURITY': next(cookie)}
 
             gathtoken = requests.post('https://auth.roblox.com/v2/logout', cookies=cookies)
             token = gathtoken.headers['x-csrf-token']
 
-            proxypool = open('proxies.txt', 'r').read().split('\n')
             proxies = {
-                'https': 'https://' + random.choice(proxypool)
+                'https': 'https://' + next(proxy)
             }
 
             data = {
@@ -241,25 +230,22 @@ def favoritemodel():
             sendfav = requests.post('https://www.roblox.com/v2/favorite/toggle', data=data, headers={'x-csrf-token': token},proxies=proxies, cookies=cookies)
 
             if sendfav.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] Favorited: {shirtid}')
+                print(f'{Fore.GREEN}[ + ] Favorited: {shirtid}{Fore.RESET}')
             else:
-                print(f'[{Fore.RED} - {Fore.RESET}] Dead Proxy or Deleted model, Retrying. . .')
+                print(f'{Fore.RED}[ - ] Dead Proxy or Deleted model, Retrying. . .{Fore.RESET}')
         except Exception as err:
-            print(f'[{Fore.RED} - {Fore.RESET}] Error: {err}')
+            print(f'{Fore.RED}[ - ] Error: {err}{Fore.RESET}')
 def favoritegame():
     while True:
         try:
-            cookie = open('cookies.txt', 'r').read().split('\n')
-            cookierandom = random.choice(cookie)
 
-            cookies = {'.ROBLOSECURITY': cookierandom}
+            cookies = {'.ROBLOSECURITY': next(cookie)}
 
             gathtoken = requests.post('https://auth.roblox.com/v2/logout', cookies=cookies)
             token = gathtoken.headers['x-csrf-token']
 
-            proxypool = open('proxies.txt', 'r').read().split('\n')
             proxies = {
-                'https': 'https://' + random.choice(proxypool)
+                'https': 'https://' + next(proxy)
             }
 
             data = {
@@ -269,11 +255,11 @@ def favoritegame():
             sendfav = requests.post(' https://www.roblox.com/favorite/toggle', data=data, headers={'x-csrf-token': token},proxies=proxies, cookies=cookies)
 
             if sendfav.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] Favorited: {shirtid}')
+                print(f'{Fore.GREEN}[ + ] Favorited: {shirtid}{Fore.RESET}')
             else:
-                print(f'[{Fore.RED} - {Fore.RESET}] Dead Proxy')
+                print(f'{Fore.RED}[ - ] Dead Proxy{Fore.RESET}')
         except Exception as err:
-            print(f'[{Fore.RED} - {Fore.RESET}] Error: {err}')
+            print(f'{Fore.RED}[ - ] Error: {err}{Fore.RESET}')
 def cookienorm():
     while True:
         try:
@@ -292,18 +278,37 @@ def cookienorm():
 
             setcostume = requests.post('https://www.roblox.com/home/updatestatus', data={'status': f'{status}',}, headers={'x-csrf-token': token}, cookies=cookies, proxies=proxies)
             if setcostume.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] Status set: {status}')
+                print(f'{Fore.GREEN}[ + ] Status set: {status}{Fore.RESET}')
             else:
-                print(f'Dead Proxy, or something failed, Retrying. . .')
+                print(f'{Fore.RED}[ - ] Dead Proxy, or something failed, Retrying. . .{Fore.RESET}')
         except Exception as err:
-            print(f'[{Fore.RED} - {Fore.RESET}] Error: {err}')
+            print(f'{Fore.RED}[ - ] Error: {err}{Fore.RESET}')
 def descriptionchange():
     while True:
         try:
-            cookie = open('cookies.txt', 'r').read().split('\n')
-            cookierandom = random.choice(cookie)
 
-            cookies = {'.ROBLOSECURITY': cookierandom}
+            cookies = {'.ROBLOSECURITY': next(cookie)}
+
+            gathtoken = requests.post('https://auth.roblox.com/v2/logout', cookies=cookies)
+            token = gathtoken.headers['x-csrf-token']
+
+            proxies = {
+                'https': 'https://' + next(proxy)
+            }
+
+
+            changedesc = requests.post('https://accountinformation.roblox.com/v1/description', cookies=cookies,proxies=proxies, headers={'x-csrf-token': token},data={'description': content})
+
+            if changedesc.status_code == 200:
+                print(f'{Fore.GREEN}[ + ] Cookie changed Description: {content}{Fore.RESET}')
+            else:
+                print(f'{Fore.RED}[ - ] Dead Proxy or already changed, Retrying. . .{Fore.RESET}')
+        except Exception as err:
+            print(f'{Fore.RED}[ - ] Error: {err}{Fore.RESET}')
+def unfollow():
+    while True:
+        try:
+            cookies = {'.ROBLOSECURITY': next(cookie)}
 
             gathtoken = requests.post('https://auth.roblox.com/v2/logout', cookies=cookies)
             token = gathtoken.headers['x-csrf-token']
@@ -313,15 +318,37 @@ def descriptionchange():
                 'https': 'https://' + random.choice(proxypool)
             }
 
-
-            changedesc = requests.post('https://accountinformation.roblox.com/v1/description', cookies=cookies,proxies=proxies, headers={'x-csrf-token': token},data={'description': content})
-
-            if changedesc.status_code == 200:
-                print(f'[{Fore.GREEN} + {Fore.RESET}] Cookie changed Description: {content}')
+            unfollow = requests.post(f'https://friends.roblox.com/v1/users/{unfollowid}/unfollow', proxies=proxies, cookies=cookies, headers={'x-csrf-token': token})
+            if unfollow.status_code == 200:
+                print(f'{Fore.GREEN}[ + ] Unfollowed: {unfollowid}')
             else:
-                print(f'[{Fore.RED} - {Fore.RESET}] Dead Proxy or already changed, Retrying. . .')
+                print(f'{Fore.RED}[ - ] Dead Proxy or Not followed, Retrying. . .')
         except Exception as err:
-            print(f'[{Fore.RED} - ] Error: {err}')
+            print(f'{Fore.RED}[ - ] Error: {err}')
+def usernamechecker():
+    while True:
+        try:
+            cookieCHECK = next(cookie)
+            cookies = {'.ROBLOSECURITY': cookieCHECK}
+
+            proxies = {
+                'https': 'https://' + next(proxy)
+            }
+
+            checkuser = requests.get('https://www.roblox.com/mobileapi/userinfo', cookies=cookies, proxies=proxies)
+            usernam = checkuser.json()['UserName']
+
+            if checkuser.status_code == 200:
+                print(f'{Fore.GREEN}[ + ] Username: {usernam} Cookie: {cookieCHECK}')
+                with open('usernames.txt', 'a+') as f:
+                    if cookieCHECK in f:
+                        print(f'{Fore.RED}[ - ] Error: Cookie already in file{Fore.RESET}')
+                    f.write(f'Username: {usernam} Cookie: {cookieCHECK} \n')
+            else:
+                print(f'{Fore.RED}[ - ] Dead Proxy, Retrying. . .{Fore.RESET}')
+
+        except Exception as err:
+            print(f'{Fore.RED}[ - ] Error: {err}{Fore.RESET}')
 if choice == '1':
     clientid = input('Enter an ID: ')
     num = int(input('Threads: '))
@@ -385,3 +412,12 @@ if choice == '13':
     num = int(input('Threads: '))
     for i in range(num):
         t1 = threading.Thread(target=descriptionchange).start()
+if choice == '14':
+    unfollowid = input('Enter an ID: ')
+    num = int(input('Threads: '))
+    for i in range(num):
+        t1 = threading.Thread(target=unfollow).start()
+if choice == '15':
+    num = int(input('Threads: '))
+    for i in range(num):
+        t1 = threading.Thread(target=usernamechecker).start()
