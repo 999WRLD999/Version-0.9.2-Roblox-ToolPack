@@ -65,7 +65,7 @@ def followbot():
             else:
                 print(f'{Fore.RED}[ - ] Dead Proxy{Fore.RESET}')
         except Exception as proxerror:
-            print(f'{Fore.RED}[ - ] Erorr: {proxerror}{Fore.RESET}')
+            print(f'{Fore.RED}[ - ] Error: {proxerror}{Fore.RESET}')
 
 
 def unproxyfriend():
